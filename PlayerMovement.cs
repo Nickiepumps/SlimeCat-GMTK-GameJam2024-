@@ -6,12 +6,12 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("PlayerSize")]
-    [SerializeField] private Vector2 normalSize = new Vector2(0.044f, 0.044f);
-    [SerializeField] private Vector2 mediumSize = new Vector2(0.066f, 0.066f);
-    [SerializeField] private Vector2 largeSize = new Vector2(0.099f, 0.099f);
-    [SerializeField] private Vector2 veryLargeSize = new Vector2(0.15f, 0.15f);
-    [SerializeField] private Vector2 smallSize = new Vector2(0.03f, 0.03f); // Player Small Size
-    private int playerSize = 1;
+    [SerializeField] public Vector2 normalSize = new Vector2(0.044f, 0.044f);
+    [SerializeField] public Vector2 mediumSize = new Vector2(0.066f, 0.066f);
+    [SerializeField] public Vector2 largeSize = new Vector2(0.099f, 0.099f);
+    [SerializeField] public Vector2 veryLargeSize = new Vector2(0.15f, 0.15f);
+    [SerializeField] public Vector2 smallSize = new Vector2(0.03f, 0.03f); // Player Small Size
+    public int playerSize = 1;
 
     [Header("Momvement Speed")]
     [SerializeField] private int moveSpeed = 5;
@@ -46,13 +46,19 @@ public class PlayerMovement : MonoBehaviour
 
         // Jump System
         isGround = Physics2D.OverlapCircle(transform.position, groundCheckRadius, groundLayer);
+
+        if(isPuke == true)
+        {
+            return;
+        }
+
         if(isGround == true && Input.GetKeyDown(KeyCode.Space))
         {
             playerRB.AddForce((Vector2.up * jumpForce), ForceMode2D.Impulse);
         }
 
         // Walk
-        moveX = Input.GetAxis("Horizontal") * moveSpeed;
+        moveX = Input.GetAxisRaw("Horizontal") * moveSpeed;
         if(moveX < 0)
         {
             transform.GetComponent<SpriteRenderer>().flipX = true;
@@ -72,17 +78,10 @@ public class PlayerMovement : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        
         if (isPuke == false)
         {
             playerRB.velocity = new Vector2(moveX, playerRB.velocity.y);
         }
-        else
-        {
-            
-        }
-        
-        //playerRB.AddForce(new Vector2(moveX, 0));
     }
     private void ScaleUp()
     {
@@ -146,8 +145,20 @@ public class PlayerMovement : MonoBehaviour
     private IEnumerator Dash()
     {
         isPuke = true;
-        playerRB.velocity = new Vector2(moveX * 10, playerRB.velocity.y);
+        playerRB.gravityScale = 0;
+
+        if(transform.GetComponent<SpriteRenderer>().flipX == true)
+        {
+            playerRB.AddForce(Vector2.left * pukeForce, ForceMode2D.Impulse);
+        }
+        else
+        {
+            playerRB.AddForce(Vector2.right * pukeForce, ForceMode2D.Impulse);
+        }
+        
+        //playerRB.velocity = new Vector2(moveX * pukeForce, playerRB.velocity.y);
         yield return new WaitForSeconds(0.05f);
+        playerRB.gravityScale = 1;
         isPuke = false;
     }
 }
