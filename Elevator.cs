@@ -16,8 +16,7 @@ public class Elevator : MonoBehaviour
 
     [Header("idk")]
     public Fuse fuse;
-    int currentPointIndex;
-    int i;
+    bool playerOnElevator;
     bool reverse;
     #endregion
 
@@ -25,7 +24,7 @@ public class Elevator : MonoBehaviour
     private void Start()
     {
         transform.position = points[wayPointStart].position;
-        currentPointIndex = wayPointStart;
+        //currentPointIndex = wayPointStart;
     }
 
     private void Update()
@@ -39,7 +38,17 @@ public class Elevator : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         StartCoroutine(hello());
-        
+        if (collision.CompareTag("Player"))
+        {
+            playerOnElevator = true;
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            playerOnElevator = false;
+        }
     }
 
     private void elevatorMove()
@@ -85,28 +94,11 @@ public class Elevator : MonoBehaviour
                         reverse = true;
                     }
                 }
-                /*if (Vector2.Distance(transform.position, points[0].position) < 0.01f)
+                if (playerhello.playerSize >= 2 && playerOnElevator)
                 {
-                    reverse = true;
-                    //currentPointIndex = 1;
+                    haveFuse = false;
                 }
-                else
-                {
-                    transform.position = Vector2.MoveTowards(transform.position, points[0].position, eSpeed * Time.deltaTime);
-                }*/
             }
-            /*else if (reverse)
-            {
-                if (Vector2.Distance(transform.position, points[1].position) < 0.01f)
-                {
-                    reverse = false;
-                    //currentPointIndex = 0;
-                }
-                else
-                {
-                    transform.position = Vector2.MoveTowards(transform.position, points[1].position, eSpeed * Time.deltaTime);
-                }
-            }*/
         }
     }
     IEnumerator hello()
@@ -119,28 +111,3 @@ public class Elevator : MonoBehaviour
     }
     #endregion 
 }
-
-#region เอาใส่หลัง if(canMove == true) ใน elevatorMove()
-/*if (Vector2.Distance(transform.position, points[i].position) < 0.01f)
-        {
-            canMove = false; //ถ้าไม่มีโค้ดบรรทัดนี้หลังจาก player โดน collision ของ elevator ตัว elevator จะทำงานเรื่อยๆ
-            if (i == points.Length - 1)
-            {
-                reverse = true;
-                i--;
-                return;
-            }
-            else if (i == 0)
-            {
-                reverse = true;
-                i++;
-                //canMove = false; //ถ้าเอา canMove = false มาไว้บรรทัดล่าง i++ หลังจาก player โดน collision ของ elevator ตัว elevator จะลงไปที่ waypoints B และกลับมาที่ waypoints A อีกครั้ง
-                return;
-            }
-        }
-
-        if (canMove)
-        {
-            transform.position = Vector2.MoveTowards(transform.position, points[i].position, eSpeed * Time.deltaTime);
-        }*/
-#endregion
