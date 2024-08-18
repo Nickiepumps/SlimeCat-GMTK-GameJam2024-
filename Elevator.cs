@@ -14,11 +14,9 @@ public class Elevator : MonoBehaviour
     [SerializeField] Transform[] points;
     public PlayerMovement playerhello;
 
-    [Header("weight")]
-    [SerializeField] int eWeight;
-
     [Header("idk")]
     public Fuse fuse;
+    int currentPointIndex;
     int i;
     bool reverse;
     #endregion
@@ -27,6 +25,7 @@ public class Elevator : MonoBehaviour
     private void Start()
     {
         transform.position = points[wayPointStart].position;
+        currentPointIndex = wayPointStart;
     }
 
     private void Update()
@@ -62,22 +61,52 @@ public class Elevator : MonoBehaviour
             if (fuse.completeFuse)
             {
                 haveFuse = true;
-                transform.position = Vector2.MoveTowards(transform.position, points[0].position, eSpeed * Time.deltaTime);
-
-                if (Vector2.Distance(transform.position, points[0].position) < 0.01f)
-                {
-
-                }
             }
-            else if (fuse.completeFuse)
+            else
             {
-                transform.position = Vector2.MoveTowards(transform.position, points[1].position, eSpeed * Time.deltaTime);
+                haveFuse = false;
+            }
 
+            if (haveFuse)
+            {
+                if(reverse)
+                {
+                    transform.position = Vector2.MoveTowards(transform.position, points[0].position, eSpeed * Time.deltaTime);
+                    if (Vector2.Distance(transform.position, points[0].position) < 0.01f)
+                    {
+                        reverse = false;
+                    }
+                }
+                else
+                {
+                    transform.position = Vector2.MoveTowards(transform.position, points[1].position, eSpeed * Time.deltaTime);
+                    if (Vector2.Distance(transform.position, points[1].position) < 0.01f)
+                    {
+                        reverse = true;
+                    }
+                }
+                /*if (Vector2.Distance(transform.position, points[0].position) < 0.01f)
+                {
+                    reverse = true;
+                    //currentPointIndex = 1;
+                }
+                else
+                {
+                    transform.position = Vector2.MoveTowards(transform.position, points[0].position, eSpeed * Time.deltaTime);
+                }*/
+            }
+            /*else if (reverse)
+            {
                 if (Vector2.Distance(transform.position, points[1].position) < 0.01f)
                 {
-                     
+                    reverse = false;
+                    //currentPointIndex = 0;
                 }
-            }
+                else
+                {
+                    transform.position = Vector2.MoveTowards(transform.position, points[1].position, eSpeed * Time.deltaTime);
+                }
+            }*/
         }
     }
     IEnumerator hello()
