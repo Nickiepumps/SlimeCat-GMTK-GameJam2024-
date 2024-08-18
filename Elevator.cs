@@ -6,6 +6,7 @@ public class Elevator : MonoBehaviour
 {
     #region variable
     public bool canMove;
+    public bool haveFuse;
 
     [Header("waypoints")]
     [SerializeField] float eSpeed = 1;
@@ -44,8 +45,37 @@ public class Elevator : MonoBehaviour
         if(canMove == true)
         {
             transform.position = Vector2.MoveTowards(transform.position, points[1].transform.position, eSpeed * Time.deltaTime);
+            if (Vector2.Distance(transform.position, points[1].position) < 0.01f)
+            {
+                canMove = false; // หยุดลิฟต์เมื่อถึง points[1]
+            }
         }
-        /*if (Vector2.Distance(transform.position, points[i].position) < 0.01f)
+        if(haveFuse == true)
+        {
+            transform.position = Vector2.MoveTowards(transform.position, points[0].transform.position, eSpeed * Time.deltaTime);
+            if (Vector2.Distance(transform.position, points[0].position) < 0.01f)
+            {
+                haveFuse = false; // หยุดลิฟต์เมื่อถึง points[2]
+            }
+        }
+        else if (playerhello.playerSize >= 2) // ถ้า playerSize มากกว่าหรือเท่ากับ 2 ลิฟต์จะไม่ขึ้น
+        {
+            haveFuse = false;
+        }
+    }
+    IEnumerator hello()
+    {
+        if (playerhello.playerSize >= 2 && haveFuse == false)
+        {
+            yield return new WaitForSeconds(0.5f);
+            canMove = true;
+        }
+    }
+    #endregion 
+}
+
+#region เอาใส่หลัง if(canMove == true) ใน elevatorMove()
+/*if (Vector2.Distance(transform.position, points[i].position) < 0.01f)
         {
             canMove = false; //ถ้าไม่มีโค้ดบรรทัดนี้หลังจาก player โดน collision ของ elevator ตัว elevator จะทำงานเรื่อยๆ
             if (i == points.Length - 1)
@@ -67,14 +97,4 @@ public class Elevator : MonoBehaviour
         {
             transform.position = Vector2.MoveTowards(transform.position, points[i].position, eSpeed * Time.deltaTime);
         }*/
-    }
-    IEnumerator hello()
-    {
-        if (playerhello.playerSize >= 2)
-        {
-            yield return new WaitForSeconds(0.5f);
-            canMove = true;
-        }
-    }
-    #endregion 
-}
+#endregion
