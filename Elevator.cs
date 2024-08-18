@@ -103,7 +103,7 @@ public class Elevator : MonoBehaviour
             }
         }
     }
-    IEnumerator hello()
+    IEnumerator hello() //hello
     {
         if (playerhello.playerSize >= 2 && haveFuse == false)
         {
