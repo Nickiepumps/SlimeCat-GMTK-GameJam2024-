@@ -18,6 +18,7 @@ public class Elevator : MonoBehaviour
     [SerializeField] int eWeight;
 
     [Header("idk")]
+    public Fuse fuse;
     int i;
     bool reverse;
     #endregion
@@ -31,6 +32,7 @@ public class Elevator : MonoBehaviour
     private void Update()
     {
         elevatorMove();
+        elevatorMove2();
     }
     #endregion
 
@@ -38,10 +40,12 @@ public class Elevator : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         StartCoroutine(hello());
+        
     }
 
     private void elevatorMove()
     {
+        // น้ำหนัก
         if(canMove == true)
         {
             transform.position = Vector2.MoveTowards(transform.position, points[1].transform.position, eSpeed * Time.deltaTime);
@@ -50,17 +54,30 @@ public class Elevator : MonoBehaviour
                 canMove = false; // หยุดลิฟต์เมื่อถึง points[1]
             }
         }
-        if(haveFuse == true)
+    }
+    private void elevatorMove2()
+    {
+        // ไฟฟ้า
         {
-            transform.position = Vector2.MoveTowards(transform.position, points[0].transform.position, eSpeed * Time.deltaTime);
-            if (Vector2.Distance(transform.position, points[0].position) < 0.01f)
+            if (fuse.completeFuse)
             {
-                haveFuse = false; // หยุดลิฟต์เมื่อถึง points[2]
+                haveFuse = true;
+                transform.position = Vector2.MoveTowards(transform.position, points[0].position, eSpeed * Time.deltaTime);
+
+                if (Vector2.Distance(transform.position, points[0].position) < 0.01f)
+                {
+
+                }
             }
-        }
-        else if (playerhello.playerSize >= 2) // ถ้า playerSize มากกว่าหรือเท่ากับ 2 ลิฟต์จะไม่ขึ้น
-        {
-            haveFuse = false;
+            else if (fuse.completeFuse)
+            {
+                transform.position = Vector2.MoveTowards(transform.position, points[1].position, eSpeed * Time.deltaTime);
+
+                if (Vector2.Distance(transform.position, points[1].position) < 0.01f)
+                {
+                     
+                }
+            }
         }
     }
     IEnumerator hello()
