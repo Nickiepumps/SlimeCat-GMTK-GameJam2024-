@@ -32,6 +32,10 @@ public class Fuse : MonoBehaviour
         {
             completeFuseDoor = true;
         }
+        else
+        {
+            completeFuseDoor = false;
+        }
     }
     #endregion
 }

@@ -21,5 +21,9 @@ public class Door : MonoBehaviour
         {
             GetComponent<BoxCollider2D>().enabled = false;
         }
+        else
+        {
+            GetComponent<BoxCollider2D>().enabled = true;
+        }
     }
 }
