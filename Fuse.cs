@@ -7,6 +7,7 @@ public class Fuse : MonoBehaviour
 {
     #region variable
     public bool completeFuse;
+    public bool overWeight;
 
     [Header("Fuse")]
     [SerializeField] List<int> numberFuse;
@@ -16,7 +17,7 @@ public class Fuse : MonoBehaviour
     #region completeFuse
     private void Update()
     {
-        if (numberFuse.Count == 2)
+        if (numberFuse.Count == 1 && overWeight == false)
         {
             completeFuse = true;
             elevator.haveFuse = true;

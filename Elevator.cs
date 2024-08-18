@@ -48,6 +48,7 @@ public class Elevator : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             playerOnElevator = false;
+            fuse.overWeight = false;
         }
     }
 
@@ -97,6 +98,7 @@ public class Elevator : MonoBehaviour
                 if (playerhello.playerSize >= 2 && playerOnElevator)
                 {
                     haveFuse = false;
+                    fuse.overWeight = true;
                 }
             }
         }
