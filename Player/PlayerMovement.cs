@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D)), RequireComponent(typeof(CircleCollider2D))]
 public class PlayerMovement : MonoBehaviour
 {
     [Header("PlayerSize")]
@@ -14,6 +15,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Momvement Speed")]
     public float walkSpeed = 3f;
+    public float walkSpeedMultiplier = 2f;
     public int jumpForce = 50;
     public int dashForce = 30;
     private float moveX;
@@ -31,13 +33,14 @@ public class PlayerMovement : MonoBehaviour
     
     private bool isGround; // Player is on the ground
     private bool isShrinking; // Player Force Shrink
+    private bool isRunning; // Player is walking
     public bool isPuke; // Player is puking
     public bool isEating; // Player is eating
 
     private Rigidbody2D playerRB;
     private void Start()
     {
-        playerRB = transform.GetComponent<Rigidbody2D>();
+        playerRB = GetComponent<Rigidbody2D>();
         inventory = GameObject.FindGameObjectWithTag("Manager").GetComponentInChildren<PlayerInventory>();
     }
     private void Update()
@@ -65,22 +68,10 @@ public class PlayerMovement : MonoBehaviour
             animator.SetBool("IsJump", true);
         }
 
-        // Walk
-        moveX = Input.GetAxis("Horizontal") * walkSpeed;
-        if(moveX < 0)
-        {
-            transform.GetComponent<SpriteRenderer>().flipX = true;
-            animator.SetBool("IsWalk", true);
-        }
-        else if(moveX > 0)
-        {
-            transform.GetComponent<SpriteRenderer>().flipX = false;
-            animator.SetBool("IsWalk", true);
-        }
-        else if(moveX == 0)
-        {
-            animator.SetBool("IsWalk", false);
-        }
+        
+        
+
+        
 
         // Player Scaling
         ScaleUp();
@@ -98,6 +89,11 @@ public class PlayerMovement : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        // Walk
+        Walk();
+        // Run
+        Sprint();
+
         if (isPuke == false)
         {
             playerRB.velocity = new Vector2(moveX, playerRB.velocity.y);
@@ -112,10 +108,12 @@ public class PlayerMovement : MonoBehaviour
         else if (playerSize == 3)
         {
             transform.localScale = largeSize;
+            groundCheckRadius = 1f;
         }
         else if (playerSize == 4)
         {
             transform.localScale = veryLargeSize;
+            groundCheckRadius = 1.9f;
         }
     }
     private void ForceScaleDown()
@@ -145,9 +143,51 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         isPuke = false;
     }
+    private void Walk()
+    {
+        moveX = Input.GetAxis("Horizontal") * walkSpeed;
+        if (Input.GetAxis("Horizontal") != 0)
+        {
+            if (moveX < 0 && isRunning == false)
+            {
+                transform.GetComponent<SpriteRenderer>().flipX = true;
+                animator.SetBool("IsWalk", true);
+                animator.SetBool("IsRun", false);
+            }
+            else if (moveX > 0 && isRunning == false)
+            {
+                transform.GetComponent<SpriteRenderer>().flipX = false;
+                animator.SetBool("IsWalk", true);
+                animator.SetBool("IsRun", false);
+            }
+        }
+        else
+        {
+            animator.SetBool("IsWalk", false);
+            animator.SetBool("IsRun", false);
+        }
+    }
     private void Sprint()
     {
-
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            isRunning = true;
+            moveX = Input.GetAxis("Horizontal") * (walkSpeed * walkSpeedMultiplier);
+            if (moveX < 0)
+            {
+                transform.GetComponent<SpriteRenderer>().flipX = true;
+            }
+            else if (moveX > 0)
+            {
+                transform.GetComponent<SpriteRenderer>().flipX = false;
+            }
+            animator.SetBool("IsWalk", false);
+            animator.SetBool("IsRun", true);
+        }
+        else if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            isRunning = false;
+        }
     }
     private void Jump()
     {

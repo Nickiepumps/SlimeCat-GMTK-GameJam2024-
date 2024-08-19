@@ -17,6 +17,22 @@ public class Puke : MonoBehaviour
     }
     private void Update()
     {
+        foreach(GameObject obj in playerInventory.itemLists)
+        {
+            if(obj.GetComponent<EatableObject>().isDigestable == true)
+            {
+                if(obj.GetComponent<EatableObject>().digestTime <= 0)
+                {
+                    Digest(obj);
+                    return;
+                }
+                else
+                {
+                    obj.GetComponent<EatableObject>().digestTime -= Time.deltaTime;
+                }
+            }
+        }
+
         if (Input.GetKeyDown(KeyCode.Q) && playerInventory.foodCount > 0)
         {
             player.animator.SetBool("IsPuke", true);
@@ -65,10 +81,40 @@ public class Puke : MonoBehaviour
             player.transform.localScale = player.normalSize;
         }
         playerInventory.foodCount--;
+
+        playerInventory.inventorySlotLists[playerInventory.foodCount].gameObject.SetActive(false);
     }
     private void CanclePuke()
     {
         player.animator.SetBool("IsPuke", false);
         player.isPuke = false;
+    }
+    private void Digest(GameObject digestedItem)
+    {
+        playerInventory.itemLists.Remove(digestedItem);
+        
+
+        player.walkSpeed = player.walkSpeed + 0.8f;
+        player.jumpForce = player.jumpForce + 10;
+        player.dashForce = player.dashForce + 10;
+
+        player.playerSize--;
+
+        if (playerInventory.foodCount == 3)
+        {
+            player.transform.localScale = player.largeSize;
+        }
+        else if (player.playerSize == 2)
+        {
+            player.transform.localScale = player.mediumSize;
+        }
+        else if (player.playerSize == 1)
+        {
+            player.transform.localScale = player.normalSize;
+        }
+
+        playerInventory.foodCount--;
+
+        playerInventory.inventorySlotLists[playerInventory.foodCount].gameObject.SetActive(false);
     }
 }
