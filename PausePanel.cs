@@ -5,6 +5,7 @@ using UnityEngine;
 public class PausePanel : MonoBehaviour
 {
     public GameObject PlayPanel;
+    public GameObject MenuButton;
     public bool isPlay;
     private void Start()
     {
@@ -19,6 +20,7 @@ public class PausePanel : MonoBehaviour
         else
         {
             Continue();
+            MenuButton.SetActive(true);
         }
     }
     public void Pause()
@@ -34,3 +36,4 @@ public class PausePanel : MonoBehaviour
         isPlay = true;
     }
 }
+
