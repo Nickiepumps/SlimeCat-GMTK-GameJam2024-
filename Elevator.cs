@@ -1,20 +1,23 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class Elevator : MonoBehaviour
 {
     #region variable
     public bool canMove;
     public bool haveFuse;
 
-    [Header("waypoints")]
-    [SerializeField] float eSpeed = 1;
-    [SerializeField] int wayPointStart;
+    [Header("Elevator Weight")]
+    [SerializeField] int elevatorWeight; // น้ำหนักผู้เล่นที่ลิฟต์สามารถลงได้เองโดยที่ไม่ต้องการฟิวส์
+
+    [Header("Waypoints")]
+    [SerializeField] float elevatorSpeed = 1; // ความเร็วลิฟต์
+    [SerializeField] int wayPointStart; // จำนวนปลายทางของลิฟต์
     [SerializeField] Transform[] points;
     public PlayerMovement playerhello;
+    public int waypointNum = 0; // จุดเริ่มต้น
 
-    [Header("idk")]
+    [Header("Fuse Box")]
     public Fuse fuse;
     bool playerOnElevator;
     bool reverse;
@@ -57,10 +60,12 @@ public class Elevator : MonoBehaviour
         // น้ำหนัก
         if(canMove == true)
         {
-            transform.position = Vector2.MoveTowards(transform.position, points[1].transform.position, eSpeed * Time.deltaTime);
+            //waypointNum++;
+            transform.position = Vector2.MoveTowards(transform.position, points[1].transform.position, elevatorSpeed * Time.deltaTime);
             if (Vector2.Distance(transform.position, points[1].position) < 0.01f)
             {
                 canMove = false; // หยุดลิฟต์เมื่อถึง points[1]
+                waypointNum++;
             }
         }
     }
@@ -81,21 +86,22 @@ public class Elevator : MonoBehaviour
             {
                 if(reverse)
                 {
-                    transform.position = Vector2.MoveTowards(transform.position, points[0].position, eSpeed * Time.deltaTime);
-                    if (Vector2.Distance(transform.position, points[0].position) < 0.01f)
+                    transform.position = Vector2.MoveTowards(transform.position, points[2].position, elevatorSpeed * Time.deltaTime);
+                    if (Vector2.Distance(transform.position, points[2].position) < 0.01f)
                     {
+                        waypointNum = 0;
                         reverse = false;
                     }
                 }
                 else
                 {
-                    transform.position = Vector2.MoveTowards(transform.position, points[1].position, eSpeed * Time.deltaTime);
+                    transform.position = Vector2.MoveTowards(transform.position, points[1].position, elevatorSpeed * Time.deltaTime);
                     if (Vector2.Distance(transform.position, points[1].position) < 0.01f)
                     {
                         reverse = true;
                     }
                 }
-                if (playerhello.playerSize >= 2 && playerOnElevator)
+                if (playerhello.playerSize >= elevatorWeight && playerOnElevator)
                 {
                     haveFuse = false;
                     fuse.overWeight = true;
@@ -105,7 +111,7 @@ public class Elevator : MonoBehaviour
     }
     IEnumerator hello() //hello
     {
-        if (playerhello.playerSize >= 2 && haveFuse == false)
+        if (playerhello.playerSize >= elevatorWeight && haveFuse == false)
         {
             yield return new WaitForSeconds(0.5f);
             canMove = true;

@@ -5,10 +5,14 @@ using UnityEngine;
 public class Door : MonoBehaviour
 {
     #region variable
-    public bool doorHaveFuse;
+    //public bool doorHaveFuse;
 
     [Header("fuse")]
     public Fuse fuse;
+
+    [Header("Door Open Waypoint")]
+    [SerializeField] private Transform waypoint;
+    [SerializeField] private float openSpeed;
     #endregion
     private void Update()
     {
@@ -19,11 +23,7 @@ public class Door : MonoBehaviour
     {
         if (fuse.completeFuseDoor)
         {
-            GetComponent<BoxCollider2D>().enabled = false;
-        }
-        else
-        {
-            GetComponent<BoxCollider2D>().enabled = true;
+            transform.position = Vector2.MoveTowards(transform.position, waypoint.position, openSpeed*Time.deltaTime);
         }
     }
 }
