@@ -38,9 +38,9 @@ public class PlayerMovement : MonoBehaviour
     private bool isGround; // Player is on the ground
     private bool isShrinking; // Player Force Shrink
     private bool isRunning; // Player is walking
-    public bool isPuke; // Player is puking
+    public bool isPuking; // Player is puking
     public bool isEating; // Player is eating
-    public bool isTubing; // Player is climbing in the tube
+    public bool isVenting; // Player is climbing in the vent
 
     private Rigidbody2D playerRB;
     private void Start()
@@ -55,7 +55,7 @@ public class PlayerMovement : MonoBehaviour
         isGround = Physics2D.OverlapCircle(transform.position, groundCheckRadius, groundLayer) 
             || Physics2D.OverlapCircle(transform.position, groundCheckRadius, eatableLayer);
 
-        if (isPuke == true)
+        if (isPuking == true)
         {
             return;
         }
@@ -89,7 +89,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Player in tube
-        if(isTubing == true)
+        if(isVenting == true)
         {
             Tubing();
         }
@@ -105,7 +105,7 @@ public class PlayerMovement : MonoBehaviour
         // Run
         Sprint();
 
-        if (isPuke == false)
+        if (isPuking == false)
         {
             playerRB.velocity = new Vector2(moveX, playerRB.velocity.y);
         }
@@ -154,7 +154,7 @@ public class PlayerMovement : MonoBehaviour
             playerRB.AddForce(Vector2.left * dashForce, ForceMode2D.Impulse);
         }
         yield return new WaitForSeconds(0.5f);
-        isPuke = false;
+        isPuking = false;
     }
     private void Walk()
     {
@@ -246,14 +246,14 @@ public class PlayerMovement : MonoBehaviour
     {
         if(collision.tag == "Vent")
         {
-            isTubing = true;
+            isVenting = true;
         }
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.tag == "Vent")
         {
-            isTubing = false;
+            isVenting = false;
             playerTrail.makeTrail = false;
             transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
         }
