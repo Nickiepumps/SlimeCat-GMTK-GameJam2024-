@@ -58,15 +58,12 @@ public class PlayerMovement : MonoBehaviour
         // Jump
         if (isGround == true && Input.GetKeyDown(KeyCode.Space))
         {
+            animator.SetBool("IsJump", true);
             Jump();
         }
-        if(isGround == true)
+        if(isGround == true && Input.GetKeyDown(KeyCode.Space) == false)
         {
             animator.SetBool("IsJump", false);
-        }
-        else
-        {
-            animator.SetBool("IsJump", true);
         }
 
         // Player Scaling
