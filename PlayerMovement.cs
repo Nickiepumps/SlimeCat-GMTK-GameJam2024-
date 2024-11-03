@@ -55,11 +55,6 @@ public class PlayerMovement : MonoBehaviour
         isGround = Physics2D.OverlapCircle(transform.position, groundCheckRadius, groundLayer) 
             || Physics2D.OverlapCircle(transform.position, groundCheckRadius, eatableLayer);
 
-        if (isPuking == true)
-        {
-            return;
-        }
-
         // Jump
         if (isGround == true && Input.GetKeyDown(KeyCode.Space))
         {
