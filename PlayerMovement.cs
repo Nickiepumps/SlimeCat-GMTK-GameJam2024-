@@ -83,7 +83,7 @@ public class PlayerMovement : MonoBehaviour
         // Player in tube
         if(isVenting == true)
         {
-            Tubing();
+            Venting();
         }
         else
         {
@@ -202,7 +202,7 @@ public class PlayerMovement : MonoBehaviour
     {
         isEating = false;
     }
-    private void Tubing()
+    private void Venting()
     {
         moveY = Input.GetAxis("Vertical") * walkSpeed;
         GetComponent<Rigidbody2D>().gravityScale = 0f;
