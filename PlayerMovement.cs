@@ -153,7 +153,7 @@ public class PlayerMovement : MonoBehaviour
         moveX = Input.GetAxisRaw("Horizontal") * walkSpeed;
         if (Input.GetAxisRaw("Horizontal") != 0)
         {
-            if (Input.GetKey(KeyCode.D) && isRunning == false)
+            if (Input.GetKey(KeyCode.A) && isRunning == false)
             {
                 transform.GetComponent<SpriteRenderer>().flipX = true;
                 animator.SetBool("IsWalk", true);
